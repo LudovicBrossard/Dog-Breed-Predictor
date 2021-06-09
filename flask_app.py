@@ -18,6 +18,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'C2HWGVoMGfNTBsrYQg8EcMrdTimkZfAb24'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
+#try if UPLOAD_FOLDER exists, otherwise create it
+if os.path.exists(UPLOAD_FOLDER) == False:
+    os.makedirs(UPLOAD_FOLDER)
+
 # Flask-Bootstrap requires this line
 Bootstrap(app)
 
