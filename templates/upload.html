@@ -1,0 +1,143 @@
+{% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+{{ super() }}
+<!-- multiple style tag is probably not needed -->
+	<style>
+		body { background: #e8f1f9; }
+
+		tr {
+		   line-height: 40px;
+		   min-height: 25px;
+		   height: 40px;
+		}		
+	</style>
+
+    <style type="text/css">
+        #textfield {
+            height: 444px;
+        }
+
+        #browsebutton {
+    		background-color: white;
+		}
+
+		#my-file-selector {
+    		display: none;
+		}
+
+    </style>
+
+    <style>
+    	img {width: 400px, height: auto}
+    </style>
+
+{% endblock %}
+
+{% block title %}
+Python Flask File Upload Example
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<h1 class="pt-5 pb-2">Welcome to Dog Breed Predictor!</h1>
+		<p class="lead">Select a picture of a dog from your local repository and wait for the algorithm to give you its breed!</p>
+		<div class="col-sm-5">
+			{% if filename %}
+				<div>
+					<img src="{{ url_for('display_image', filename=filename) }}" class="img-fluid pt-5"
+						width="450" 
+						height="450">
+				</div>
+				<br>
+			{% endif %}
+			
+			<form class="form-inline center-block" method="POST" action="/" enctype="multipart/form-data">
+				{{ form.hidden_tag() }}
+		        <div class="input-group">
+		            <label id="browsebutton" class="btn btn-default input-group-addon" for="my-file-selector">
+		                {{ form.file(id="my-file-selector") }}
+		                Browse&hellip;
+		            </label>
+		            <input id="filename-display" type="text" class="form-control" readonly value="Choose a file" style="width: 285px;">
+		        </div>
+		        <script>
+		        	document.getElementById("browsebutton").addEventListener('change', function (e) {
+				      var name = document.getElementById("my-file-selector").files[0].name;
+				      document.getElementById("filename-display").value = name
+				    })
+		        </script>
+		          
+		        {{ form.submit(class_="btn btn-primary") }}
+			</form>
+
+			<p class="lead">
+				{% with messages = get_flashed_messages() %}
+				  {% if messages %}
+					{% for message in messages %}
+					{% if "Error" not in message: %}
+						 <div class="alert alert-info">
+		        			<strong>Success! </strong> {{ message }}</div>
+	        		{% endif %}
+	        		{% if "Error" in message: %}
+						<div class="alert alert-warning"> {{ message}}</div>
+						{% endif %}
+					{% endfor %}
+				  {% endif %}
+				{% endwith %}
+			</p>
+		</div>
+		
+
+		<div class="col-sm-6">
+			{% if results %}
+				<p class="lead">
+					Prediction: {{ results[1][0] }}
+				</p><br><br>
+			{% endif %}
+
+			{% if results %}
+			<table class="table">
+			  <thead class="thead-dark">
+			    <tr>
+			      <th scope="col">#</th>
+			      <th scope="col">Breed</th>
+			      <th scope="col">Probabilities</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr>
+			      <th scope="row">1</th>
+			      <td>{{ results[1][0] }}</td>
+			      <td>{{ results[0][0] }}</td>
+			    </tr>
+			    <tr>
+			      <th scope="row">2</th>
+			      <td>{{ results[1][1] }}</td>
+			      <td>{{ results[0][1] }}</td>
+			    </tr>
+			    <tr>
+			      <th scope="row">3</th>
+			      <td>{{ results[1][2] }}</td>
+			      <td>{{ results[0][2] }}</td>
+			    </tr>
+			    <tr>
+			      <th scope="row">4</th>
+			      <td>{{ results[1][3] }}</td>
+			      <td>{{ results[0][3] }}</td>
+			    </tr>
+			    <tr>
+			      <th scope="row">5</th>
+			      <td>{{ results[1][4] }}</td>
+			      <td>{{ results[0][4] }}</td>
+			    </tr>
+			  </tbody>
+			</table>
+			{% endif %}
+	</div>
+</div>
+
+{% endblock %}
